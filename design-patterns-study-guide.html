@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design Patterns — Study Guide</title>
+  <style>
+    :root { --ink:#172033; --muted:#607087; --line:#dce4ef; --paper:#f6f8fc; --brand:#5b4ae8; --teal:#098c87; --warm:#e9693d; --card:#fff; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--paper); color:var(--ink); line-height:1.55; }
+    header { background:radial-gradient(circle at 85% 10%,#7768ff 0,#493cc9 34%,#211c63 100%); color:#fff; padding:72px max(24px,calc((100% - 1140px)/2)); }
+    header p { max-width:720px; font-size:1.1rem; opacity:.88; }
+    h1 { font-size:clamp(2.25rem,5vw,4.4rem); letter-spacing:-.055em; margin:0 0 12px; }
+    h2 { font-size:1.8rem; letter-spacing:-.03em; margin:0 0 8px; }
+    h3 { margin:0; font-size:1.1rem; }
+    main { max-width:1140px; margin:0 auto; padding:42px 24px 76px; }
+    .intro, .cheat { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:24px; box-shadow:0 8px 24px #3e4a7110; }
+    .intro { display:flex; gap:24px; align-items:center; margin-bottom:34px; }
+    .legend { display:flex; flex-wrap:wrap; gap:8px; }
+    .tag { display:inline-block; font-size:.75rem; font-weight:750; border-radius:999px; padding:4px 9px; }
+    .creational { color:#5040c9; background:#eeebff; } .behavioral { color:#00736e; background:#dff8f5; } .structural { color:#a94420; background:#fff0e9; }
+    .controls { display:flex; gap:8px; flex-wrap:wrap; margin:28px 0 20px; }
+    button { border:1px solid var(--line); padding:8px 13px; border-radius:9px; background:#fff; color:var(--ink); cursor:pointer; font:inherit; font-weight:650; }
+    button:hover,button.active { background:var(--ink); border-color:var(--ink); color:#fff; }
+    .section-title { display:flex; align-items:baseline; gap:10px; margin:42px 0 16px; }
+    .count { color:var(--muted); font-size:.9rem; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:16px; }
+    article { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:19px; display:flex; flex-direction:column; gap:12px; }
+    article p { margin:0; color:#3a485d; font-size:.94rem; }
+    .why { border-left:3px solid var(--warm); background:#fff7f3; padding:8px 10px; font-size:.88rem; border-radius:0 8px 8px 0; }
+    details { border-top:1px solid var(--line); padding-top:11px; }
+    summary { cursor:pointer; font-weight:700; color:#303d55; }
+    details details { border:0; padding:10px 0 0; }
+    details details summary { color:var(--muted); font-size:.87rem; }
+    pre { overflow:auto; background:#131929; color:#dce7ff; padding:14px; border-radius:9px; font-size:.78rem; line-height:1.48; white-space:pre; }
+    code { font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace; }
+    .cheat { margin-top:54px; }
+    table { width:100%; border-collapse:collapse; font-size:.92rem; margin-top:16px; }
+    th { text-align:left; color:var(--muted); font-size:.77rem; text-transform:uppercase; letter-spacing:.06em; }
+    th,td { padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+    tr:last-child td { border-bottom:0; }
+    .flow { margin-top:24px; padding:18px; border-radius:12px; background:#202a43; color:#eff4ff; overflow:auto; font-family:"SFMono-Regular",Consolas,monospace; white-space:pre-wrap; }
+    footer { text-align:center; color:var(--muted); padding:4px; font-size:.9rem; }
+    @media (max-width:600px) { header { padding:52px 24px; } .intro { display:block; } table { display:block; overflow:auto; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Design Patterns<br>Study Guide</h1>
+    <p>A practical reference for the 22 GoF patterns you learned: what problem each solves, when to reach for it, and the code pressure that makes it useful.</p>
+  </header>
+  <main>
+    <section class="intro">
+      <div><h2>How to study this page</h2><p>Read the <strong>problem without the pattern</strong> first. Then expand the matching implementation. A pattern is valuable only when it removes a real pressure in the design—not because its name sounds sophisticated.</p></div>
+      <div class="legend"><span class="tag creational">Creational</span><span class="tag behavioral">Behavioral</span><span class="tag structural">Structural</span></div>
+    </section>
+    <nav class="controls" aria-label="Pattern category filters">
+      <button class="active" data-filter="all">All patterns</button>
+      <button data-filter="creational">Creational</button>
+      <button data-filter="behavioral">Behavioral</button>
+      <button data-filter="structural">Structural</button>
+    </nav>
+    <div id="pattern-sections"></div>
+    <section class="cheat" id="cheat-sheet">
+      <h2>Cheat sheet: identify the core idea</h2>
+      <p>Start with the problem you have, not a pattern name.</p>
+      <table>
+        <thead><tr><th>When you notice…</th><th>Core idea</th><th>Use</th></tr></thead>
+        <tbody id="cheat-body"></tbody>
+      </table>
+      <div class="flow">Need to CREATE an object?
+  Choose an implementation → Factory
+  Create a matching family → Abstract Factory
+  Many optional construction values → Builder
+  Copy a configured base object → Prototype
+  Exactly one shared instance → Singleton
+
+Need to CHANGE BEHAVIOUR?
+  Replace an algorithm → Strategy       Notify listeners → Observer
+  Lifecycle determines actions → State  Save/undo state → Memento
+  Actions must queue/log/undo → Command Pass through checks → Chain of Responsibility
+
+Need to COMPOSE objects?
+  Incompatible API → Adapter            One item or a group → Composite
+  Hide subsystem complexity → Facade    Add stackable behaviour → Decorator
+  Control access/lazy loading → Proxy   Share repeated immutable data → Flyweight</div>
+    </section>
+  </main>
+  <footer>Java examples are deliberately compact; production code should add domain validation and error handling where appropriate.</footer>
+  <script>
+    const patterns = [
+      { group:'creational', name:'Factory', core:'Choose one concrete implementation without exposing its construction.', when:'A caller chooses a type from input or configuration.', bad:`// Checkout owns every implementation\nif (type.equals("CARD")) return new CardPayment();\nif (type.equals("UPI")) return new UpiPayment();`, good:`interface Payment { void pay(double amount); }\nclass PaymentFactory {\n  static Payment create(String type) {\n    return switch (type) {\n      case "CARD" -> new CardPayment();\n      case "UPI" -> new UpiPayment();\n      default -> throw new IllegalArgumentException();\n    };\n  }\n}\nPayment payment = PaymentFactory.create("UPI");`, pain:'Adding types spreads construction decisions through callers.' },
+      { group:'creational', name:'Abstract Factory', core:'Create a compatible family of related objects.', when:'A platform, theme, vendor, or environment determines several related services.', bad:`// Mixed vendor setup is easy to create\nStorage storage = new AwsStorage();\nMessageQueue queue = new AzureQueue();`, good:`interface CloudFactory {\n  Storage createStorage();\n  MessageQueue createQueue();\n}\nclass AwsFactory implements CloudFactory {\n  public Storage createStorage() { return new AwsStorage(); }\n  public MessageQueue createQueue() { return new AwsQueue(); }\n}\nCloudFactory cloud = new AwsFactory();\nStorage storage = cloud.createStorage();`, pain:'Related objects can be accidentally mixed and vendor changes touch many places.' },
+      { group:'creational', name:'Builder', core:'Build a complex object step by step with readable named options.', when:'An object has many optional values, defaults, or validation rules.', bad:`// What do true and 30 mean?\nnew HttpRequest(url, "POST", body, 30, true);`, good:`HttpRequest request = new HttpRequest.Builder(url)\n  .method("POST")\n  .body("{...}")\n  .timeoutSeconds(30)\n  .followRedirects(true)\n  .build();`, pain:'Long constructors are unreadable and optional argument combinations become error-prone.' },
+      { group:'creational', name:'Singleton', core:'Expose one shared instance of a class.', when:'Exactly one application-wide instance is genuinely necessary.', bad:`// Different services may receive inconsistent config\nAppConfig a = new AppConfig("prod");\nAppConfig b = new AppConfig("dev");`, good:`class AppConfig {\n  private static final AppConfig INSTANCE = new AppConfig();\n  private AppConfig() {}\n  static AppConfig getInstance() { return INSTANCE; }\n}\nAppConfig config = AppConfig.getInstance();`, pain:'Multiple instances cause inconsistent shared state. Prefer dependency injection when global state is not required.' },
+      { group:'creational', name:'Prototype', core:'Create a new object by copying a configured template.', when:'New objects resemble an existing, expensive-to-configure object.', bad:`new Report("logo.png", "Acme footer", "Arial", "A4", "Sales");\nnew Report("logo.png", "Acme footer", "Arial", "A4", "Inventory");`, good:`Report template = new Report("logo.png", "Acme footer", "Arial", "A4");\nReport sales = template.copy();\nsales.setTitle("Sales");\nReport inventory = template.copy();\ninventory.setTitle("Inventory");`, pain:'Repeated setup gets duplicated and templates slowly become inconsistent.' },
+      { group:'behavioral', name:'Strategy', core:'Make interchangeable algorithms implement one interface.', when:'The same job has alternative approaches, such as payment or sorting.', bad:`void pay(String method, double amount) {\n  if (method.equals("card")) { /* card */ }\n  else if (method.equals("upi")) { /* UPI */ }\n}`, good:`interface PaymentStrategy { void pay(double amount); }\nclass UpiPayment implements PaymentStrategy {\n  public void pay(double amount) { /* pay via UPI */ }\n}\nclass Checkout {\n  Checkout(PaymentStrategy strategy) { this.strategy = strategy; }\n  void checkout(double amount) { strategy.pay(amount); }\n}`, pain:'Conditionals grow every time an algorithm is added or changed.' },
+      { group:'behavioral', name:'Observer', core:'Publish an event to many independent subscribers.', when:'One action should trigger changing downstream reactions.', bad:`void placeOrder() {\n  saveOrder();\n  sendEmail();\n  reduceInventory();\n  trackAnalytics();\n}`, good:`interface OrderObserver { void onPlaced(String id); }\nclass OrderService {\n  private final List<OrderObserver> observers = new ArrayList<>();\n  void subscribe(OrderObserver o) { observers.add(o); }\n  void place(String id) { observers.forEach(o -> o.onPlaced(id)); }\n}`, pain:'The event source becomes coupled to every downstream concern.' },
+      { group:'behavioral', name:'Iterator', core:'Traverse a collection without exposing its storage or traversal machinery.', when:'Clients need sequential access to a custom collection or tree.', bad:`String[] songs = playlist.getSongs(); // exposes storage\nfor (int i = 0; i < songs.length; i++) {\n  System.out.println(songs[i]);\n}`, good:`class Playlist implements Iterable<String> {\n  private final List<String> songs = new ArrayList<>();\n  public Iterator<String> iterator() { return songs.iterator(); }\n}\nfor (String song : playlist) {\n  System.out.println(song);\n}`, pain:'Callers depend on an array/list/tree representation and cannot survive its change.' },
+      { group:'behavioral', name:'Command', core:'Represent an action as an object.', when:'Actions must be queued, logged, retried, mapped to UI, or undone.', bad:`void press(String button) {\n  if (button.equals("TV_ON")) tv.turnOn();\n  else if (button.equals("LIGHTS_OFF")) lights.turnOff();\n}`, good:`interface Command { void execute(); }\nclass TurnOnTv implements Command {\n  public void execute() { tv.turnOn(); }\n}\nclass Remote {\n  void press(Command command) { command.execute(); }\n}\nremote.press(new TurnOnTv());`, pain:'The invoker knows every action, and actions cannot be easily stored or replayed.' },
+      { group:'behavioral', name:'Mediator', core:'Centralize coordination among many collaborating objects.', when:'Components have complex many-to-many communication.', bad:`country.onChange(() -> {\n  stateDropdown.loadStates(country.value());\n  shipping.loadMethods(country.value());\n  button.update();\n});\n// Every control calls other controls directly.`, good:`interface CheckoutMediator { void countryChanged(String country); }\nclass CountryDropdown {\n  private final CheckoutMediator mediator;\n  void select(String country) { mediator.countryChanged(country); }\n}\nclass CheckoutForm implements CheckoutMediator {\n  public void countryChanged(String country) {\n    states.loadStates(country); shipping.loadMethods(country);\n  }\n}`, pain:'Controls become a web of dependencies; one new rule requires edits in many components.' },
+      { group:'behavioral', name:'State', core:'Put state-specific behaviour and transitions into state objects.', when:'An object’s allowed actions depend on its lifecycle stage.', bad:`void ship() {\n  if (!status.equals("PAID")) throw new IllegalStateException();\n  status = "SHIPPED";\n}\n// Similar status checks in pay(), cancel(), deliver()...`, good:`interface OrderState { void ship(Order order); }\nclass PaidState implements OrderState {\n  public void ship(Order order) { order.setState(new ShippedState()); }\n}\nclass Order {\n  private OrderState state = new PaidState();\n  void ship() { state.ship(this); }\n}`, pain:'Every lifecycle action grows conditionals for every state.' },
+      { group:'behavioral', name:'Template Method', core:'Define a fixed algorithm skeleton; subclasses supply selected steps.', when:'The workflow is stable, but certain steps vary by subtype.', bad:`class SalesReport { void generate() { loadSales(); calculate(); exportPdf(); } }\nclass StockReport { void generate() { loadStock(); calculate(); exportPdf(); } }`, good:`abstract class ReportGenerator {\n  public final void generate() { load(); calculate(); exportPdf(); }\n  abstract void load();\n  abstract void calculate();\n  private void exportPdf() { /* shared step */ }\n}\nclass SalesReport extends ReportGenerator { /* implement two steps */ }`, pain:'Repeated workflow code diverges when the shared process changes.' },
+      { group:'behavioral', name:'Chain of Responsibility', core:'Pass a request through independent handlers in order.', when:'A request needs optional, reorderable checks or processing stages.', bad:`void handle(Request r) {\n  authenticate(r);\n  authorize(r);\n  rateLimit(r);\n  process(r);\n}`, good:`interface Handler { void handle(Request request); }\nclass AuthHandler implements Handler {\n  private final Handler next;\n  public void handle(Request r) {\n    if (!r.authenticated()) throw new SecurityException();\n    next.handle(r);\n  }\n}\nHandler chain = new AuthHandler(new RateLimitHandler(app));`, pain:'One controller owns every validation rule and cannot easily reuse or reorder them.' },
+      { group:'behavioral', name:'Visitor', core:'Add operations across a stable object hierarchy without changing those objects.', when:'Product types rarely change, but operations on them frequently grow.', bad:`class Book {\n  double tax() { return price * .05; }\n  String invoiceText() { return "Book"; }\n}\n// Every new operation edits Book, Electronics, Furniture...`, good:`interface Product { void accept(ProductVisitor visitor); }\ninterface ProductVisitor {\n  void visit(Book book);\n  void visit(Electronics electronics);\n}\nclass TaxVisitor implements ProductVisitor {\n  public void visit(Book book) { /* 5% */ }\n  public void visit(Electronics item) { /* 18% */ }\n}`, pain:'New operations require modifying every product. Trade-off: adding a product type requires changing visitors.' },
+      { group:'behavioral', name:'Memento', core:'Capture and restore an object’s state without exposing its internals.', when:'You need undo, checkpoints, drafts, or rollback.', bad:`String before = editor.text; // caller knows internals\neditor.type(" world");\neditor.text = before;`, good:`class Editor {\n  private String text = "";\n  Memento save() { return new Memento(text); }\n  void restore(Memento m) { text = m.text; }\n  static class Memento {\n    private final String text;\n    private Memento(String text) { this.text = text; }\n  }\n}`, pain:'Callers manage private state themselves and can omit fields or make invalid restores.' },
+      { group:'structural', name:'Adapter', core:'Convert an existing interface into the interface your code expects.', when:'Integrating a legacy component or third-party API with a different API.', bad:`interface PaymentProcessor { void pay(double amount); }\nclass VendorSdk { void payInCents(int cents) {} }\n// VendorSdk cannot be passed where PaymentProcessor is expected.`, good:`class VendorAdapter implements PaymentProcessor {\n  private final VendorSdk sdk;\n  VendorAdapter(VendorSdk sdk) { this.sdk = sdk; }\n  public void pay(double amount) {\n    sdk.payInCents((int) (amount * 100));\n  }\n}\ncheckout.use(new VendorAdapter(new VendorSdk()));`, pain:'Application code becomes coupled to incompatible external and legacy interfaces.' },
+      { group:'structural', name:'Composite', core:'Treat one object and a group of objects through the same interface.', when:'The domain is a tree: folders/files, menus/items, org charts.', bad:`class Folder { List<File> files; }\n// Folders cannot contain other folders; callers distinguish types.`, good:`interface FileSystemItem { void show(String indent); }\nclass File implements FileSystemItem { /* show leaf */ }\nclass Folder implements FileSystemItem {\n  List<FileSystemItem> children = new ArrayList<>();\n  void add(FileSystemItem item) { children.add(item); }\n  public void show(String i) { children.forEach(c -> c.show(i + "  ")); }\n}`, pain:'Clients treat leaves and groups differently, making nesting awkward.' },
+      { group:'structural', name:'Facade', core:'Offer one simple entry point to a complex subsystem.', when:'Most clients need the same high-level workflow across several services.', bad:`payment.charge(amount);\nseats.reserve(seat);\nString ticket = tickets.generate();\nemail.send(ticket);\n// Every caller must know order and all services.`, good:`class FlightBookingFacade {\n  void book(String seat, double amount) {\n    payment.charge(amount);\n    seats.reserve(seat);\n    email.send(tickets.generate());\n  }\n}\nnew FlightBookingFacade().book("12A", 5000);`, pain:'Callers duplicate orchestration and can call services in the wrong order.' },
+      { group:'structural', name:'Decorator', core:'Wrap an object to add optional, stackable behaviour.', when:'Features such as caching, logging, or encryption combine independently.', bad:`class CachedLoggedReportService extends ReportService {}\nclass SecureCachedLoggedReportService extends ReportService {}\n// A class is needed for every combination.`, good:`interface ReportService { String generate(); }\nclass Logging implements ReportService {\n  private final ReportService wrapped;\n  public String generate() { log(); return wrapped.generate(); }\n}\nReportService service = new Caching(\n  new Logging(new BasicReportService())\n);`, pain:'Inheritance creates a combinatorial explosion of feature combinations.' },
+      { group:'structural', name:'Bridge', core:'Separate two independent dimensions so they can vary separately.', when:'Inheritance would combine every variation of two axes.', bad:`class EmailAlert {}  class SmsAlert {}\nclass EmailReminder {} class SmsReminder {}\n// Add Push and every notification type needs another class.`, good:`interface Channel { void send(String message); }\nabstract class Notification {\n  protected final Channel channel;\n  Notification(Channel channel) { this.channel = channel; }\n}\nclass Alert extends Notification {\n  void send(String msg) { channel.send("ALERT: " + msg); }\n}\nnew Alert(new SmsChannel()).send("CPU high");`, pain:'Two dimensions of variation multiply into a large inheritance hierarchy.' },
+      { group:'structural', name:'Proxy', core:'Stand in for a real object to control its access or creation.', when:'The real object is expensive, remote, protected, or should load lazily.', bad:`class ProductImage {\n  ProductImage(String url) { download(url); } // expensive\n}\n// Opening a catalogue downloads every image immediately.`, good:`interface Image { void display(); }\nclass LazyImageProxy implements Image {\n  private RealImage real; private final String url;\n  public void display() {\n    if (real == null) real = new RealImage(url);\n    real.display();\n  }\n}\nImage image = new LazyImageProxy("shoe.jpg"); // no download yet`, pain:'Clients create/access the real object eagerly, even when it may never be needed.' },
+      { group:'structural', name:'Flyweight', core:'Share repeated immutable data among many small objects.', when:'Very many objects repeat a large amount of the same immutable data.', bad:`class Character {\n  char value; String font; int size; String color;\n}\n// A million characters each duplicate the same style.`, good:`class TextStyleFactory {\n  private final Map<String, TextStyle> cache = new HashMap<>();\n  TextStyle get(String font, int size, String color) {\n    String key = font + size + color;\n    return cache.computeIfAbsent(key, k -> new TextStyle(font, size, color));\n  }\n}\nTextStyle normal = styles.get("Arial", 12, "black");`, pain:'Large numbers of tiny objects waste memory by duplicating identical immutable state.' }
+    ];
+
+    const sections = document.getElementById('pattern-sections');
+    const labels = { creational:'Creational patterns', behavioral:'Behavioral patterns', structural:'Structural patterns' };
+    const cheat = document.getElementById('cheat-body');
+    function esc(value) { return value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+    function render(filter='all') {
+      sections.innerHTML = '';
+      for (const group of Object.keys(labels)) {
+        const items = patterns.filter(p => p.group === group && (filter === 'all' || filter === group));
+        if (!items.length) continue;
+        const section = document.createElement('section');
+        section.innerHTML = `<div class="section-title"><h2>${labels[group]}</h2><span class="count">${items.length} patterns</span></div><div class="grid">${items.map(p => `<article><div><span class="tag ${p.group}">${p.group}</span><h3>${p.name}</h3></div><p>${p.core}</p><p><strong>Use when:</strong> ${p.when}</p><div class="why"><strong>Without it:</strong> ${p.pain}</div><details><summary>View the code examples</summary><details><summary>Problem without the pattern</summary><pre><code>${esc(p.bad)}</code></pre></details><details><summary>With ${p.name}</summary><pre><code>${esc(p.good)}</code></pre></details></details></article>`).join('')}</div>`;
+        sections.appendChild(section);
+      }
+    }
+    cheat.innerHTML = patterns.map(p => `<tr><td>${p.when}</td><td>${p.core}</td><td><span class="tag ${p.group}">${p.name}</span></td></tr>`).join('');
+    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+      button.classList.add('active'); render(button.dataset.filter);
+    }));
+    render();
+  </script>
+</body>
+</html>
